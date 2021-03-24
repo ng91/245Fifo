@@ -47,19 +47,36 @@ for(i = 0; i < 10; i=i+1) begin
 end
 #10 clock = 0;
 enable_data = 1;
-for(i = 0; i < 20; i=i+1) begin
-    #10 clock = 0;  
-    #10 clock = 1;  
-end
-enable_data = 0;
+#10 clock = 1;
 for(i = 0; i < 20; i=i+1) begin
     #10 clock = 0;  
     #10 clock = 1;  
 end
 #10 clock = 0; 
+enable_data = 0;
+#10 clock = 1; 
+for(i = 0; i < 20; i=i+1) begin
+    #10 clock = 0;  
+    #10 clock = 1;  
+end
+#10 clock = 1;  
+enable_data = 1;
+#10 clock = 0;  
+
+for(i = 0; i < 20; i=i+1) begin
+    #10 clock = 0;  
+    #10 clock = 1;  
+end
+#10 clock = 0; 
+enable_data = 0;
+#10 clock = 1; 
+for(i = 0; i < 20; i=i+1) begin
+    #10 clock = 0;  
+    #10 clock = 1;  
+end
 txe_n = 1; 
 #10 clock = 1; 
-for(i = 0; i < 10; i=i+1) begin
+for(i = 0; i < 20; i=i+1) begin
     #10 clock = 0;  
     #10 clock = 1;  
 end

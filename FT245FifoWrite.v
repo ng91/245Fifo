@@ -158,21 +158,37 @@ reg [2:0]state = txe_is_high;
 reg [2:0]next_state = txe_is_high;
 reg transfer_on = 1'b0;
 reg wr_n = 1'b1;
+
+reg clock_out_on = 1'b0;
+
 localparam txe_is_high = 3'b001;
 localparam txe_is_low = 3'b010;
 localparam wr_low = 3'b011;
 localparam tx_end = 3'b100;
 
-assign clock_out = (!wr_n) ? clock_in : 1'b0;
+assign clock_out = (clock_out_on & !wr_n) ? clock_in : 1'b0;
 assign data_out = data_in;
+
+
+always @ (negedge clock_in)
+begin
+    if(data_to_send == 1'b1) begin
+        clock_out_on = 1'b1;
+    end else begin
+        clock_out_on = 1'b0;
+    end
+end
+
+
 
 always @ (*)
 begin
     case(state)
         txe_is_high: begin
             transfer_on = 1'b0;
-
+            
             if(txe_n == 1'b0) begin
+                //wr_n = 1'b1;
                 next_state = txe_is_low;
             end
 
@@ -181,14 +197,17 @@ begin
             if(txe_n == 1'b1) begin
                 next_state = txe_is_high;
             end else if (data_to_send == 1'b1) begin
-                
+                wr_n = 1'b0;
                 next_state = wr_low;
-            end 
+                
+            end else begin
+                wr_n = 1'b1;
+            end
         end
         wr_low: begin
 
             if(txe_n == 1'b1) begin
-                wr_n = 1'b1;
+                
                 transfer_on = 1'b0;
                 next_state = txe_is_high;
             end else if (data_to_send == 1'b0) begin
